@@ -3,6 +3,7 @@ using WebApplication5.Data;
 using WebApplication5.Dtos.Stock;
 using WebApplication5.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WebApplication5.Helpers;
 using WebApplication5.Interfaces;
@@ -23,6 +24,7 @@ public class StockController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize] 
     public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
     {
         var stocks  = await _stockRepo.GetAllAsync(query);
