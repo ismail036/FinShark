@@ -3,6 +3,7 @@ using WebApplication5.Data;
 using WebApplication5.Dtos.Stock;
 using WebApplication5.Mappers;
 using api.Models;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WebApplication5.Helpers;
@@ -24,7 +25,6 @@ public class StockController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize] 
     public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
     {
         var stocks  = await _stockRepo.GetAllAsync(query);
@@ -58,17 +58,21 @@ public class StockController : ControllerBase
     
     [HttpPut]
     [Route("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestsDto update)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestsDto updateDto)
     {
-        var stockModel = await _stockRepo.UpdateAsync(id, update);
+        var stockModel = await _stockRepo.GetByIdAsync(id);
 
         if (stockModel == null)
         {
             return NotFound();
         }
-        
-        return Ok(StockMappers.ToStockDto(stockModel));
+        updateDto.Adapt(stockModel);
+
+        var updatedStock = await _stockRepo.UpdateAsync(id, stockModel);
+
+        return Ok(updatedStock.Adapt<StockDto>());
     }
+
 
     [HttpDelete]
     [Route("{id:int}")]

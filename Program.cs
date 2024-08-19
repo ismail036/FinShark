@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WebApplication5.Dtos.Account;
+using WebApplication5.Dtos.Comments;
+using WebApplication5.Dtos.Stock;
 using WebApplication5.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,7 +91,14 @@ builder.Services.AddScoped<IStockRepository    , StockRepository>();
 builder.Services.AddScoped<ICommentRepository  , CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-builder.Services.AddControllers().AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<RegisterDto>());
+builder.Services.AddControllers().AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssemblyContaining<RegisterDto>();
+    fv.RegisterValidatorsFromAssemblyContaining<CreateCommentDto>();
+    fv.RegisterValidatorsFromAssemblyContaining<UpdateCommentRequestDto>();
+    fv.RegisterValidatorsFromAssemblyContaining<CreateStockRequestsDto>();
+    fv.RegisterValidatorsFromAssemblyContaining<UpdateStockRequestsDto>();
+});
 
 
 var app = builder.Build();  

@@ -1,4 +1,5 @@
 using api.Models;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using WebApplication5.Data;
 using WebApplication5.Dtos.Stock;
@@ -71,7 +72,7 @@ public class StockRepository : IStockRepository
         return stockModel;  
     }
     
-    public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestsDto stockDto)
+    public async Task<Stock?> UpdateAsync(int id, Stock stockDto)
     {
         var stockModel = await _context.Stock.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -80,12 +81,7 @@ public class StockRepository : IStockRepository
             return null;
         }
         
-        stockModel.Symbol = stockDto.Symbol;
-        stockModel.CompanyName = stockDto.CompanyName;
-        stockModel.Purchase = stockDto.Purchase;
-        stockModel.LastDiv = stockDto.LastDiv;
-        stockModel.Industry = stockDto.Industry;
-        stockModel.MarketCap = stockDto.MarketCap;
+        stockDto.Adapt(stockModel);
         
         await _context.SaveChangesAsync();
 

@@ -181,3 +181,5 @@
 /Users/ismailparlak/RiderProjects/WebApplication5/WebApplication5/bin/Debug/net8.0/FluentValidation.dll
 /Users/ismailparlak/RiderProjects/WebApplication5/WebApplication5/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
 /Users/ismailparlak/RiderProjects/WebApplication5/WebApplication5/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+/Users/ismailparlak/RiderProjects/WebApplication5/WebApplication5/bin/Debug/net8.0/Mapster.dll
+/Users/ismailparlak/RiderProjects/WebApplication5/WebApplication5/bin/Debug/net8.0/Mapster.Core.dll
