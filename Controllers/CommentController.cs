@@ -8,7 +8,7 @@ using WebApplication5.Helpers;
 
 namespace WebApplication5.Controllers;
 
-[Route("api/comment")]
+[Route("api/[controller]")]
 [ApiController]
 public class CommentController : ControllerBase
 {

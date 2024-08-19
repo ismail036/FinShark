@@ -1,4 +1,5 @@
 using api.Models;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApplication5.Data;
@@ -8,6 +9,7 @@ using WebApplication5.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebApplication5.Dtos.Account;
 using WebApplication5.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,14 +58,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
-    {
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequiredLength = 6;
-    })
+builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthentication(options =>
@@ -94,7 +89,10 @@ builder.Services.AddScoped<IStockRepository    , StockRepository>();
 builder.Services.AddScoped<ICommentRepository  , CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-var app = builder.Build();
+builder.Services.AddControllers().AddFluentValidation(fv=>fv.RegisterValidatorsFromAssemblyContaining<RegisterDto>());
+
+
+var app = builder.Build();  
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
