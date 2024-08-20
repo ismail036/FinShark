@@ -87,9 +87,25 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5101", "http://127.0.0.1:5500", "http://ismail-macbook-pro.local:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
+
+
+
 builder.Services.AddScoped<IStockRepository    , StockRepository>();
 builder.Services.AddScoped<ICommentRepository  , CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+
 
 builder.Services.AddControllers().AddFluentValidation(fv =>
 {
@@ -116,5 +132,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowSpecificOrigins");
+
 
 app.Run();

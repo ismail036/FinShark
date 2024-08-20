@@ -1,9 +1,12 @@
+using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication5.Interfaces;
 using WebApplication5.Mappers; 
 using WebApplication5.Data;
 using WebApplication5.Dtos.Comments;
 using WebApplication5.Dtos.Stock;
+using WebApplication5.Extensions;
 using WebApplication5.Helpers;
 
 namespace WebApplication5.Controllers;
@@ -12,13 +15,15 @@ namespace WebApplication5.Controllers;
 [ApiController]
 public class CommentController : ControllerBase
 {
-    private readonly ICommentRepository _commentRepo;
-    private readonly IStockRepository _stockRepo;
+    private readonly ICommentRepository   _commentRepo;
+    private readonly IStockRepository     _stockRepo;
+    private readonly UserManager<AppUser> _userManager;
 
-    public CommentController(ICommentRepository commentRepo , IStockRepository stockRepo)
+    public CommentController(ICommentRepository commentRepo , IStockRepository stockRepo , UserManager<AppUser> userManager)
     {
         _commentRepo = commentRepo;
-        _stockRepo = stockRepo;
+        _stockRepo   = stockRepo;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -48,9 +53,14 @@ public class CommentController : ControllerBase
         {
             return BadRequest("Stock does not exist");
         }
+
+        var username = User.GetUsername();
+        var appUser = await _userManager.FindByNameAsync(username);
     
         var commentModel = CommentMapper.ToCommentFromCreate(commentDto, stockId);
-    
+
+        commentModel.AppUserId = appUser.Id;
+        
         await _commentRepo.CreateAsync(commentModel);
 
         var commentDtoResult = CommentMapper.ToCommentDto(commentModel);
